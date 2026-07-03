@@ -10,26 +10,20 @@ export interface RiskReport {
 }
 
 // Categories whose presence means the original workflow exposed high-value data.
-const HIGH_CATEGORIES: Category[] = ['apiKey', 'jwt', 'credentialName', 'chatId']
-const MEDIUM_CATEGORIES: Category[] = [
-  'email',
-  'url',
-  'ip',
-  'phone',
-  'dbBucket',
-  'resourceId',
-  'uuid',
-]
+// Only categories that a default rule can actually emit are listed here (see the
+// SCORED_CATEGORIES ⊆ rule categories test).
+const HIGH_CATEGORIES: Category[] = ['apiKey', 'credentialName', 'chatId']
+const MEDIUM_CATEGORIES: Category[] = ['email', 'url', 'dbBucket', 'resourceId', 'uuid']
+
+/** Every category the risk model scores — exported so tests can assert no dead entries. */
+export const SCORED_CATEGORIES: readonly Category[] = [...HIGH_CATEGORIES, ...MEDIUM_CATEGORIES]
 
 const REASON_LABELS: Partial<Record<Category, string>> = {
   apiKey: 'credential/API key value(s)',
-  jwt: 'JWT/token(s)',
   credentialName: 'credential reference(s)',
   chatId: 'messaging id(s)',
   email: 'email address(es)',
   url: 'URL(s)',
-  ip: 'IP address(es)',
-  phone: 'phone number(s)',
   dbBucket: 'resource name(s)',
   resourceId: 'resource id(s)',
   uuid: 'id(s)',

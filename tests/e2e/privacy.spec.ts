@@ -55,3 +55,32 @@ test('anonymizes in-browser and leaks nothing to the network', async ({ page }) 
   // The core promise: nothing left the browser.
   expect(foreignRequests, 'no request should go to any foreign origin').toEqual([])
 })
+
+test('CSP is present and blocks foreign network egress (connect-src none)', async ({ page }) => {
+  await page.goto('/')
+
+  const csp = await page.evaluate(
+    () =>
+      document
+        .querySelector('meta[http-equiv="Content-Security-Policy"]')
+        ?.getAttribute('content') ?? '',
+  )
+  expect(csp).toContain("connect-src 'none'")
+
+  // Attempt a foreign fetch and confirm the browser fires a connect-src CSP
+  // violation — proof the request is blocked by policy, not merely by CORS.
+  const violated = await page.evaluate(async () => {
+    let blocked = false
+    document.addEventListener('securitypolicyviolation', (e) => {
+      if (e.violatedDirective.startsWith('connect-src')) blocked = true
+    })
+    try {
+      await fetch('https://example.org/beacon')
+    } catch {
+      // expected — the request never leaves the browser
+    }
+    await new Promise((r) => setTimeout(r, 100))
+    return blocked
+  })
+  expect(violated, 'a foreign fetch must trigger a connect-src CSP violation').toBe(true)
+})

@@ -1,25 +1,7 @@
 import { defineConfig, type Plugin } from 'vitest/config'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import tailwindcss from '@tailwindcss/vite'
-
-// The keystone privacy guarantee: block all cross-origin network egress so a
-// pasted workflow can never leave the browser. Injected only into the built
-// HTML — the dev server needs inline scripts + a websocket for HMR.
-const CSP = [
-  "default-src 'self'",
-  "base-uri 'none'",
-  "object-src 'none'",
-  "script-src 'self'",
-  "style-src 'self' 'unsafe-inline'", // CodeMirror/Svelte inject scoped <style> tags
-  "img-src 'self' data:",
-  "font-src 'self'",
-  "connect-src 'none'", // no fetch/XHR/WebSocket — nothing can be exfiltrated
-  "worker-src 'self'", // allow the offline service worker to register
-  "form-action 'none'",
-  // Note: frame-ancestors only works as an HTTP header, not in a <meta> CSP.
-  // GitHub Pages can't set headers; clickjacking risk is negligible for a
-  // stateless, no-auth tool.
-].join('; ')
+import { CSP } from './src/lib/csp'
 
 // Generate a service worker that precaches the built shell (index.html + all
 // hashed assets) at install, so the app works fully offline after one visit.

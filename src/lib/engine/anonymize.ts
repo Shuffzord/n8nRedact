@@ -28,18 +28,23 @@ function walk(
   path: string,
   rules: Rule[],
   ctx: AnonymizationContext,
+  seen: WeakSet<object>,
 ): unknown {
   if (typeof node === 'string') {
     return applyRules(node, key, nameHint, inResourceLocator, path, rules, ctx)
   }
   if (Array.isArray(node)) {
+    if (seen.has(node)) return node // cycle guard (JSON is acyclic, but the API is public)
+    seen.add(node)
     for (let i = 0; i < node.length; i++) {
-      node[i] = walk(node[i], key, null, false, `${path}[${i}]`, rules, ctx)
+      node[i] = walk(node[i], key, null, false, `${path}[${i}]`, rules, ctx, seen)
     }
     return node
   }
   if (node !== null && typeof node === 'object') {
     const obj = node as Record<string, unknown>
+    if (seen.has(obj)) return obj
+    seen.add(obj)
     // n8n stores headers/query params as `{ name, value }` pairs; the sensitive
     // signal is the sibling `name`, not the object key (`value`).
     const pairName = typeof obj.name === 'string' ? obj.name : null
@@ -49,7 +54,7 @@ function walk(
     for (const k of Object.keys(obj)) {
       const childHint = k === 'value' ? pairName : null
       const childRl = isRl && k === 'value'
-      obj[k] = walk(obj[k], k, childHint, childRl, path ? `${path}.${k}` : k, rules, ctx)
+      obj[k] = walk(obj[k], k, childHint, childRl, path ? `${path}.${k}` : k, rules, ctx, seen)
     }
     return obj
   }
@@ -66,7 +71,7 @@ function walk(
 export function anonymize(json: unknown, rules: Rule[]): AnonymizeResult {
   const ctx = new AnonymizationContext()
   const enabled = rules.filter((r) => r.enabled)
-  const output = walk(structuredClone(json), null, null, false, '', enabled, ctx)
+  const output = walk(structuredClone(json), null, null, false, '', enabled, ctx, new WeakSet())
 
   const countsByCategory: Record<string, number> = {}
   for (const change of ctx.changes) {
