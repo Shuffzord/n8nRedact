@@ -22,13 +22,17 @@
   <div class="space-y-3">
     <div class="flex items-center gap-2">
       <h2 class="text-xs font-semibold uppercase tracking-wide text-slate-400">Risk</h2>
-      <span class="rounded-full border px-2 py-0.5 text-xs font-medium uppercase {BADGE[risk.level]}">
+      <span
+        class="rounded-full border px-2 py-0.5 text-xs font-medium uppercase {BADGE[risk.level]}"
+      >
         {risk.level}
       </span>
     </div>
 
     {#each risk.warnings as warning (warning)}
-      <p class="rounded border border-red-800 bg-red-950/40 p-2.5 text-xs leading-relaxed text-red-200">
+      <p
+        class="rounded border border-red-800 bg-red-950/40 p-2.5 text-xs leading-relaxed text-red-200"
+      >
         ⚠ {warning}
       </p>
     {/each}

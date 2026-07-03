@@ -7,13 +7,14 @@
 <div class="space-y-3">
   <h2 class="text-xs font-semibold uppercase tracking-wide text-slate-400">Rules</h2>
 
-  <p class="rounded border border-slate-700 bg-slate-900/60 p-2.5 text-xs leading-relaxed text-slate-300">
+  <p
+    class="rounded border border-slate-700 bg-slate-900/60 p-2.5 text-xs leading-relaxed text-slate-300"
+  >
     <span class="font-medium text-slate-100">Format-preserving replacements.</span>
     Values are swapped for realistic but fake data — e.g.
     <code class="text-emerald-300">john@acme.com</code> →
-    <code class="text-emerald-300">user1@example.com</code>. The output stays a valid,
-    importable workflow; it just contains no real data. The same value always maps to
-    the same replacement.
+    <code class="text-emerald-300">user1@example.com</code>. The output stays a valid, importable
+    workflow; it just contains no real data. The same value always maps to the same replacement.
   </p>
 
   <ul class="space-y-1">

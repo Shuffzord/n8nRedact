@@ -52,7 +52,10 @@
     error = null
     const obj = parsed as Record<string, unknown>
     isN8n =
-      !!obj && typeof obj === 'object' && Array.isArray(obj.nodes) && typeof obj.connections === 'object'
+      !!obj &&
+      typeof obj === 'object' &&
+      Array.isArray(obj.nodes) &&
+      typeof obj.connections === 'object'
     const result = anonymize(parsed, rules)
     output = JSON.stringify(result.output, null, 2)
     counts = result.countsByCategory
@@ -142,7 +145,9 @@
 
     <div class="ml-2 inline-flex overflow-hidden rounded border border-slate-700 text-sm">
       <button
-        class="px-3 py-1.5 {viewMode === 'split' ? 'bg-slate-700' : 'bg-slate-900 hover:bg-slate-800'}"
+        class="px-3 py-1.5 {viewMode === 'split'
+          ? 'bg-slate-700'
+          : 'bg-slate-900 hover:bg-slate-800'}"
         onclick={() => (viewMode = 'split')}
       >
         Split

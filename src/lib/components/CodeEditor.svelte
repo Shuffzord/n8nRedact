@@ -30,9 +30,7 @@
           json(),
           EditorView.lineWrapping,
           EditorView.theme({ '&': { height: '100%' }, '.cm-scroller': { overflow: 'auto' } }),
-          ...(readonly
-            ? [EditorState.readOnly.of(true), EditorView.editable.of(false)]
-            : []),
+          ...(readonly ? [EditorState.readOnly.of(true), EditorView.editable.of(false)] : []),
           EditorView.updateListener.of((u) => {
             if (u.docChanged && onChange) onChange(u.state.doc.toString())
           }),

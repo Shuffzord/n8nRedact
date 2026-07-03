@@ -18,11 +18,15 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Unit tests
-        run: pnpm test
-      - name: Type-check + build
+      - name: Lint (Prettier + ESLint)
+        run: pnpm lint
+      - name: Svelte type-check
+        run: pnpm check
+      - name: Build
         run: pnpm build
       - name: Install Playwright browser
         run: pnpm exec playwright install --with-deps chromium
       - name: E2E tests
         run: pnpm test:e2e
+      - name: Unit tests
+        run: pnpm test
