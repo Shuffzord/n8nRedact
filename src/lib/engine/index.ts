@@ -1,0 +1,5 @@
+export { anonymize } from './anonymize'
+export { defaultRules } from './rules'
+export { assessRisk } from './risk'
+export type { RiskLevel, RiskReport } from './risk'
+export type { Rule, Category, Change, AnonymizeResult, RuleContext } from './types'

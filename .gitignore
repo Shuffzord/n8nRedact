@@ -1,0 +1,15 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+coverage
+playwright-report
+test-results
+.vite
+
+# Real workflow samples — never commit user data. Drop real .json here to validate locally.
+/samples/
+/study-workflows-internal-only/
+/.planning/
+*.local.json

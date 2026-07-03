@@ -1,0 +1,47 @@
+{
+  "name": "Acme Onboarding",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://api.acme.com/v1/users",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer sk_live_ABC123def456GHI" },
+            { "name": "X-Trace", "value": "plain-non-secret" }
+          ]
+        }
+      },
+      "id": "b1e7c8d2-1234-4abc-8def-0123456789ab",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [100, 200],
+      "credentials": {
+        "httpHeaderAuth": { "id": "5", "name": "Acme Prod Key" }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "john.doe@acme.com",
+        "toEmail": "ops@acme.com",
+        "text": "Notify ops@acme.com when https://hooks.acme.com/abc fires",
+        "apiKey": "xoxb-9999-SECRETTOKENvalue"
+      },
+      "id": "c2f8d9e3-2345-4bcd-9efa-123456789abc",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [400, 200]
+    }
+  ],
+  "connections": {
+    "HTTP Request": {
+      "main": [[{ "node": "Send Email", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "versionId": "d3a9e0f4-3456-4cde-afab-23456789abcd",
+  "meta": { "instanceId": "e4b0f1a5-4567-4def-bfbc-3456789abcde" }
+}
