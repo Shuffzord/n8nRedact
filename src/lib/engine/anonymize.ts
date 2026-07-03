@@ -5,13 +5,14 @@ function applyRules(
   value: string,
   key: string | null,
   nameHint: string | null,
+  inResourceLocator: boolean,
   path: string,
   rules: Rule[],
   ctx: AnonymizationContext,
 ): string {
   let current = value
   for (const rule of rules) {
-    const result = rule.apply(current, { key, nameHint, path }, ctx)
+    const result = rule.apply(current, { key, nameHint, inResourceLocator, path }, ctx)
     current = result.value
     if (result.whole) break
   }
@@ -23,16 +24,17 @@ function walk(
   node: unknown,
   key: string | null,
   nameHint: string | null,
+  inResourceLocator: boolean,
   path: string,
   rules: Rule[],
   ctx: AnonymizationContext,
 ): unknown {
   if (typeof node === 'string') {
-    return applyRules(node, key, nameHint, path, rules, ctx)
+    return applyRules(node, key, nameHint, inResourceLocator, path, rules, ctx)
   }
   if (Array.isArray(node)) {
     for (let i = 0; i < node.length; i++) {
-      node[i] = walk(node[i], key, null, `${path}[${i}]`, rules, ctx)
+      node[i] = walk(node[i], key, null, false, `${path}[${i}]`, rules, ctx)
     }
     return node
   }
@@ -41,9 +43,13 @@ function walk(
     // n8n stores headers/query params as `{ name, value }` pairs; the sensitive
     // signal is the sibling `name`, not the object key (`value`).
     const pairName = typeof obj.name === 'string' ? obj.name : null
+    // resourceLocator objects (`{ __rl: true, value, mode, ... }`) hold the real
+    // external resource id in `value`.
+    const isRl = obj.__rl === true
     for (const k of Object.keys(obj)) {
       const childHint = k === 'value' ? pairName : null
-      obj[k] = walk(obj[k], k, childHint, path ? `${path}.${k}` : k, rules, ctx)
+      const childRl = isRl && k === 'value'
+      obj[k] = walk(obj[k], k, childHint, childRl, path ? `${path}.${k}` : k, rules, ctx)
     }
     return obj
   }
@@ -60,7 +66,7 @@ function walk(
 export function anonymize(json: unknown, rules: Rule[]): AnonymizeResult {
   const ctx = new AnonymizationContext()
   const enabled = rules.filter((r) => r.enabled)
-  const output = walk(structuredClone(json), null, null, '', enabled, ctx)
+  const output = walk(structuredClone(json), null, null, false, '', enabled, ctx)
 
   const countsByCategory: Record<string, number> = {}
   for (const change of ctx.changes) {

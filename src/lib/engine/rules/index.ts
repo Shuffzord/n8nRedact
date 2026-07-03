@@ -2,6 +2,7 @@ import type { Rule } from '../types'
 import { secretKeyRule } from './secretKey'
 import { credentialRule } from './credential'
 import { resourceNameRule } from './resourceName'
+import { resourceLocatorRule } from './resourceLocator'
 import { chatIdRule } from './chatId'
 import { uuidRule } from './uuid'
 import { emailRule } from './email'
@@ -19,6 +20,7 @@ export function defaultRules(): Rule[] {
     secretKeyRule(),
     credentialRule(),
     resourceNameRule(),
+    resourceLocatorRule(),
     chatIdRule(),
     uuidRule(),
     emailRule(),
@@ -31,6 +33,7 @@ export {
   secretKeyRule,
   credentialRule,
   resourceNameRule,
+  resourceLocatorRule,
   chatIdRule,
   uuidRule,
   emailRule,

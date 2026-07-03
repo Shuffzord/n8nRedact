@@ -26,6 +26,7 @@
     uuid: 'IDs (UUID / hex)',
     chatId: 'Messaging IDs',
     dbBucket: 'Resource names',
+    resourceId: 'Resource IDs',
   }
 
   function reset() {

@@ -3,6 +3,7 @@ import { anonymize, defaultRules, assessRisk } from '../src/lib/engine'
 import { collectStringLeaves } from './helpers'
 import sampleWorkflow from './engine/fixtures/sample-workflow.json'
 import credentialsWorkflow from './engine/fixtures/credentials-workflow.json'
+import mixedWorkflow from './engine/fixtures/mixed-integrations-workflow.json'
 
 /**
  * LIVING COVERAGE MATRIX — every functional and non-functional requirement maps
@@ -68,11 +69,12 @@ describe('Functional: rule categories', () => {
     expect(out).toContain('example1.com')
   })
 
-  // GAP
-  it('TODO: URL path-embedded secret (Slack/Discord webhook token, Airtable id in cachedResultUrl) is scrubbed', () => {
-    expect.fail(
-      'TODO: fakeUrl keeps the path, so a webhook token or Airtable base id in the URL path leaks — scrub the path (default: drop). See .planning/ROADMAP.md #3 (Arch #2 / QA C1)',
-    )
+  // COVERED (fixture: mixed-integrations)
+  it('scrubs URL path-embedded secrets (Slack webhook token, Airtable id in cachedResultUrl)', () => {
+    const out = asString(anonymize(mixedWorkflow, defaultRules()).output)
+    expect(out).not.toContain('abcdEFGHijklMNOPqrstUVWX')
+    expect(out).not.toContain('hooks.slack.com')
+    expect(out).not.toContain('/appY058Iq5Gnkd2qT/tblLfXM821pkVArpX')
   })
 
   // COVERED (also: tests/engine/anonymize.test.ts)
@@ -109,11 +111,12 @@ describe('Functional: rule categories', () => {
     expect(out).toContain('Credential 2')
   })
 
-  // GAP
-  it('TODO: resourceLocator `value` IDs are anonymized (Airtable base/table, Postgres schema/table)', () => {
-    expect.fail(
-      'TODO: no rule touches `{__rl:true, value}` non-UUID ids like "appY058Iq5Gnkd2qT"/"tblLfXM821pkVArpX" — add a resourceLocator rule. See .planning/ROADMAP.md #3 (Arch #1)',
-    )
+  // COVERED (fixture: mixed-integrations)
+  it('anonymizes resourceLocator value IDs (Airtable base/table, Postgres schema/table)', () => {
+    const out = asString(anonymize(mixedWorkflow, defaultRules()).output)
+    for (const id of ['appY058Iq5Gnkd2qT', 'tblLfXM821pkVArpX', 'reporting', 'weather_data']) {
+      expect(out).not.toContain(id)
+    }
   })
 
   // COVERED (also: tests/engine/credentials.test.ts via cachedResultName absence)
@@ -325,31 +328,32 @@ describe('Invariant: no sensitive value leaks into the output', () => {
     expect(after).toBe(before)
   })
 
-  // GAP — needs a committed synthetic fixture + the full leaf-based invariant.
-  it('TODO: Airtable fixture — base/table ids (resourceLocator value + cachedResultUrl path)', () => {
-    expect.fail(
-      'TODO: commit an Airtable fixture and assert appXXXX/tblXXXX ids do not leak (value + URL path). See .planning/ROADMAP.md #4 (QA C2)',
-    )
+  // COVERED (fixture: mixed-integrations)
+  it('Airtable fixture — base/table ids do not leak (resourceLocator value + cachedResultUrl path)', () => {
+    assertNoDetectedSecretLeaks(mixedWorkflow)
+    const out = asString(anonymize(mixedWorkflow, defaultRules()).output)
+    expect(out).not.toContain('appY058Iq5Gnkd2qT')
+    expect(out).not.toContain('tblLfXM821pkVArpX')
   })
 
-  // GAP
-  it('TODO: Postgres fixture — schema/table names in resourceLocator value', () => {
-    expect.fail(
-      'TODO: commit a Postgres fixture and assert schema/table names do not leak. See .planning/ROADMAP.md #4 (QA C2)',
-    )
+  // COVERED (fixture: mixed-integrations)
+  it('Postgres fixture — schema/table names in resourceLocator value do not leak', () => {
+    const out = asString(anonymize(mixedWorkflow, defaultRules()).output)
+    expect(out).not.toContain('reporting')
+    expect(out).not.toContain('weather_data')
   })
 
-  // GAP
-  it('TODO: Slack/Discord webhook fixture — path-embedded token', () => {
-    expect.fail(
-      'TODO: commit a webhook fixture and assert the path token does not leak. See .planning/ROADMAP.md #3/#4 (QA C1/C2)',
-    )
+  // COVERED (fixture: mixed-integrations)
+  it('Slack/Discord webhook fixture — path-embedded token does not leak', () => {
+    const out = asString(anonymize(mixedWorkflow, defaultRules()).output)
+    expect(out).not.toContain('abcdEFGHijklMNOPqrstUVWX')
+    expect(out).not.toContain('hooks.slack.com')
   })
 
-  // GAP
-  it('TODO: Telegram fixture — chatId literal replaced, expression preserved', () => {
-    expect.fail(
-      'TODO: commit a Telegram fixture pairing a literal chatId with an expression chatId and assert both invariants. See .planning/ROADMAP.md #4 (QA C3)',
-    )
+  // COVERED (fixture: mixed-integrations)
+  it('Telegram fixture — literal chatId replaced, expression chatId preserved', () => {
+    const out = asString(anonymize(mixedWorkflow, defaultRules()).output)
+    expect(out).not.toContain('1002405526505')
+    expect(out).toContain('{{ $json.chat.id }}')
   })
 })

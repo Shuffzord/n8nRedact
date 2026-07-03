@@ -11,7 +11,15 @@ export interface RiskReport {
 
 // Categories whose presence means the original workflow exposed high-value data.
 const HIGH_CATEGORIES: Category[] = ['apiKey', 'jwt', 'credentialName', 'chatId']
-const MEDIUM_CATEGORIES: Category[] = ['email', 'url', 'ip', 'phone', 'dbBucket', 'uuid']
+const MEDIUM_CATEGORIES: Category[] = [
+  'email',
+  'url',
+  'ip',
+  'phone',
+  'dbBucket',
+  'resourceId',
+  'uuid',
+]
 
 const REASON_LABELS: Partial<Record<Category, string>> = {
   apiKey: 'credential/API key value(s)',
@@ -23,6 +31,7 @@ const REASON_LABELS: Partial<Record<Category, string>> = {
   ip: 'IP address(es)',
   phone: 'phone number(s)',
   dbBucket: 'resource name(s)',
+  resourceId: 'resource id(s)',
   uuid: 'id(s)',
 }
 

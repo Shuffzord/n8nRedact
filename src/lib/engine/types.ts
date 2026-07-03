@@ -9,6 +9,7 @@ export type Category =
   | 'name'
   | 'company'
   | 'dbBucket'
+  | 'resourceId'
   | 'credentialName'
   | 'chatId'
   | 'custom'
@@ -22,6 +23,8 @@ export interface RuleContext {
    * `value` of such a pair (e.g. an HTTP header), this is the sibling `name`.
    */
   nameHint: string | null
+  /** True when this value is the `value` of an n8n resourceLocator (`__rl: true`). */
+  inResourceLocator: boolean
   /** Dotted JSON path to the value, e.g. `nodes[0].parameters.url`. */
   path: string
 }

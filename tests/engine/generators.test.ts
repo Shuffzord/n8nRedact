@@ -6,10 +6,9 @@ describe('generators', () => {
     expect(fakeEmail(3)).toBe('user3@example.com')
   })
 
-  it('fakeUrl keeps scheme + path and drops host/auth/query', () => {
-    expect(fakeUrl('https://api.acme.com/v1/users?token=abc', 1)).toBe(
-      'https://example1.com/v1/users',
-    )
+  it('fakeUrl keeps only the scheme + reserved host, dropping path/auth/query', () => {
+    expect(fakeUrl('https://api.acme.com/v1/users?token=abc', 1)).toBe('https://example1.com')
+    expect(fakeUrl('https://hooks.slack.com/services/T0/B0/secret', 3)).toBe('https://example3.com')
     expect(fakeUrl('not a url', 2)).toBe('https://example2.com')
   })
 

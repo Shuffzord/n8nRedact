@@ -31,10 +31,12 @@ describe('credential & hex-id rules', () => {
     expect(out.nodes[0]?.credentials.notionApi.name).toBe('Credential 2')
   })
 
-  it('maps a hex id identically whether standalone or inside a URL path', () => {
+  it('anonymizes a standalone hex id and drops the URL path entirely', () => {
     const out = output()
     const id = out.nodes[0]?.parameters.databaseId
     expect(id).toMatch(/^[0-9a-f]{32}$/)
-    expect(out.nodes[0]?.parameters.url).toBe(`https://example1.com/${id}`)
+    expect(id).not.toBe('59dfb60f349a4f758a7f2a71f5f25d9a')
+    // The path (which carried the same Notion id) is dropped, not preserved.
+    expect(out.nodes[0]?.parameters.url).toBe('https://example1.com')
   })
 })

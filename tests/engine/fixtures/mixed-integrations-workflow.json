@@ -1,0 +1,80 @@
+{
+  "name": "Mixed Integrations",
+  "nodes": [
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "appY058Iq5Gnkd2qT",
+          "mode": "list",
+          "cachedResultName": "Growth Base",
+          "cachedResultUrl": "https://airtable.com/appY058Iq5Gnkd2qT"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblLfXM821pkVArpX",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://airtable.com/appY058Iq5Gnkd2qT/tblLfXM821pkVArpX"
+        }
+      },
+      "id": "11111111-1111-4111-8111-111111111111",
+      "name": "Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "reporting",
+          "mode": "list"
+        },
+        "table": {
+          "__rl": true,
+          "value": "weather_data",
+          "mode": "list"
+        }
+      },
+      "id": "22222222-2222-4222-8222-222222222222",
+      "name": "Postgres",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [200, 0]
+    },
+    {
+      "parameters": {
+        "url": "https://hooks.slack.com/services/T00000000/B11111111/abcdEFGHijklMNOPqrstUVWX"
+      },
+      "id": "33333333-3333-4333-8333-333333333333",
+      "name": "Slack Webhook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [400, 0]
+    },
+    {
+      "parameters": {
+        "chatId": "=-1002405526505"
+      },
+      "id": "44444444-4444-4444-8444-444444444444",
+      "name": "Telegram Literal",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [600, 0]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat.id }}"
+      },
+      "id": "55555555-5555-4555-8555-555555555555",
+      "name": "Telegram Expression",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [800, 0]
+    }
+  ],
+  "connections": {},
+  "active": false,
+  "settings": {}
+}

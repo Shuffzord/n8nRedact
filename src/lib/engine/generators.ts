@@ -28,12 +28,15 @@ export function fakeEmail(n: number): string {
   return `user${n}@example.com`
 }
 
-/** Replace the host with a reserved domain; keep scheme + path, drop auth/query. */
+/**
+ * Replace the whole URL with a reserved-domain origin. The path is dropped, not
+ * kept: paths routinely carry secrets (Slack/Discord webhook tokens, Airtable
+ * ids), and there is no reliable way to tell a secret segment from a benign one.
+ */
 export function fakeUrl(original: string, n: number): string {
   try {
     const u = new URL(original)
-    const path = u.pathname === '/' ? '' : u.pathname
-    return `${u.protocol}//example${n}.com${path}`
+    return `${u.protocol}//example${n}.com`
   } catch {
     return `https://example${n}.com`
   }
@@ -64,6 +67,17 @@ export function fakeCredentialName(n: number): string {
 /** A generic placeholder for a named resource (Notion DB, Slack channel, etc.). */
 export function fakeResourceName(n: number): string {
   return `Resource ${n}`
+}
+
+/**
+ * Format-preserving fake for a resource identifier (Airtable `app…`/`tbl…`,
+ * a database/table name, etc.). Known prefixes are kept so the shape stays
+ * recognisable; the rest is character-class-preserving fake data.
+ */
+export function fakeResourceId(original: string, n: number): string {
+  const m = /^(app|tbl|viw|fld|rec|bas|sel|usr)([A-Za-z0-9]+)$/.exec(original)
+  if (m) return m[1] + fakeToken(m[2], n)
+  return fakeToken(original, n)
 }
 
 /**
