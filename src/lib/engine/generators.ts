@@ -102,6 +102,21 @@ export function fakePhone(original: string, n: number): string {
 }
 
 /**
+ * Deterministic fake integer that preserves the original's sign and digit count
+ * (e.g. a numeric Telegram `chatId` like `-1002405526505`). The leading digit is
+ * forced to 1-9 so the digit count survives re-serialization as a JSON number
+ * (no dropped leading zero). Pure in `n`, so the same original maps to the same
+ * fake.
+ */
+export function fakeNumericId(original: number, n: number): number {
+  const digits = String(Math.abs(original)).length
+  const rng = makeRng(n)
+  let s = String(1 + rng(9)) // first digit 1-9, so the count is preserved
+  for (let i = 1; i < digits; i++) s += String(rng(10))
+  return original < 0 ? -Number(s) : Number(s)
+}
+
+/**
  * Length- and character-class-preserving token so field validators still pass.
  * Digits map to digits, letters to letters (case kept), separators are left as
  * they are. The output depends only on the counter and the value's shape, never

@@ -1,4 +1,5 @@
 import { AnonymizationContext } from './context'
+import { anonymizeNumericId } from './rules/chatId'
 import type { AnonymizeResult, Rule } from './types'
 
 function applyRules(
@@ -32,6 +33,12 @@ function walk(
 ): unknown {
   if (typeof node === 'string') {
     return applyRules(node, key, nameHint, inResourceLocator, path, rules, ctx)
+  }
+  // A messaging id (Telegram chatId etc.) is sometimes a JSON number, not a
+  // string. Handle it only when the chatId rule is enabled; the helper is
+  // conservative and fires solely for messaging-id key names.
+  if (typeof node === 'number' && rules.some((r) => r.id === 'chatId')) {
+    return anonymizeNumericId(node, nameHint ?? key, path, ctx)
   }
   if (Array.isArray(node)) {
     if (seen.has(node)) return node // cycle guard (JSON is acyclic, but the API is public)

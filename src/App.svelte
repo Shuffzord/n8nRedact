@@ -49,7 +49,19 @@
     isN8n = false
   }
 
+  // Typing re-parses + re-anonymizes + rebuilds the MergeView on every
+  // keystroke, so the editable pane debounces `run()`. Upload/drag-drop and
+  // rule toggles call `run()` directly (not typing — instant is expected); each
+  // clears any pending typing run so a stale keystroke can't clobber the result.
+  let runTimer: ReturnType<typeof setTimeout> | undefined
+
+  function scheduleRun() {
+    clearTimeout(runTimer)
+    runTimer = setTimeout(run, 150)
+  }
+
   function run() {
+    clearTimeout(runTimer)
     if (!input.trim()) {
       error = null
       reset()
@@ -77,9 +89,10 @@
     risk = assessRisk(parsed, result)
   }
 
+  // The editable editor's onChange: typing, so debounce.
   function process(text: string) {
     input = text
-    run()
+    scheduleRun()
   }
 
   function toggleRule(id: string) {
@@ -89,7 +102,10 @@
 
   async function handleFiles(files: FileList | null) {
     const file = files?.[0]
-    if (file) process(await file.text())
+    if (file) {
+      input = await file.text()
+      run()
+    }
   }
 
   function onDrop(e: DragEvent) {
