@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/logo.png" alt="n8nRedact logo" width="96" />
+<img src="public/logo-white.png" alt="n8nRedact logo" width="96" />
 
 # n8nRedact
 
