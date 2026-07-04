@@ -4,6 +4,7 @@
   import { EditorState } from '@codemirror/state'
   import { basicSetup } from 'codemirror'
   import { json } from '@codemirror/lang-json'
+  import { editorTheme } from '../editor-theme'
 
   let {
     value = '',
@@ -29,7 +30,7 @@
           basicSetup,
           json(),
           EditorView.lineWrapping,
-          EditorView.theme({ '&': { height: '100%' }, '.cm-scroller': { overflow: 'auto' } }),
+          ...editorTheme,
           ...(readonly ? [EditorState.readOnly.of(true), EditorView.editable.of(false)] : []),
           EditorView.updateListener.of((u) => {
             if (u.docChanged && onChange) onChange(u.state.doc.toString())

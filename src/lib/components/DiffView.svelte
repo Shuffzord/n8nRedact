@@ -5,6 +5,7 @@
   import { EditorState } from '@codemirror/state'
   import { basicSetup } from 'codemirror'
   import { json } from '@codemirror/lang-json'
+  import { editorTheme } from '../editor-theme'
 
   let { original = '', anonymized = '' }: { original?: string; anonymized?: string } = $props()
 
@@ -15,6 +16,7 @@
     basicSetup,
     json(),
     EditorView.lineWrapping,
+    ...editorTheme,
     EditorState.readOnly.of(true),
     EditorView.editable.of(false),
   ]

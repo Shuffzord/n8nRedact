@@ -1,1 +1,34 @@
 @import 'tailwindcss';
+
+@theme {
+  /* Brand accent — a pink-red (#e14970). Reserved for brand/interactive accents
+     only (wordmark, primary buttons, active toggle/segmented states, focus
+     rings). Never used for risk badges: it sits too close to red, and the
+     semantic scale (green = safe, amber = medium, red = high) must stay
+     unambiguous. */
+  --color-primary-50: #fdf2f5;
+  --color-primary-100: #fce7ec;
+  --color-primary-200: #fbcfd9;
+  --color-primary-300: #f6a6bb;
+  --color-primary-400: #ef7295;
+  --color-primary-500: #e14970;
+  --color-primary-600: #cd2c58;
+  --color-primary-700: #ac2049;
+  --color-primary-800: #901e42;
+  --color-primary-900: #7b1e3d;
+  --color-primary-950: #440b1d;
+
+  /* Monospace stack for the JSON editors — system fonts only. A strict CSP
+     (font-src 'self', connect-src 'none') blocks any external font host, so
+     Google Fonts et al. are off-limits by design. */
+  --font-mono:
+    ui-monospace, 'SF Mono', 'SFMono-Regular', 'Cascadia Code', 'JetBrains Mono', 'Fira Code',
+    'Roboto Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+@layer base {
+  /* Dark form controls, scrollbars and native UI to match the app chrome. */
+  :root {
+    color-scheme: dark;
+  }
+}

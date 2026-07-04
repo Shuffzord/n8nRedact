@@ -1,9 +1,19 @@
 <script lang="ts">
+  import { Button } from 'bits-ui'
   import CodeEditor from './lib/components/CodeEditor.svelte'
   import DiffView from './lib/components/DiffView.svelte'
   import RulePanel from './lib/components/RulePanel.svelte'
   import Report from './lib/components/Report.svelte'
   import { anonymize, assessRisk, defaultRules, type Rule, type RiskReport } from './lib/engine'
+
+  // Shared control styles (Tailwind). Kept here so the toolbar reads cleanly.
+  const focusRing =
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950'
+  const toolbarBtn = `rounded-md bg-slate-800 px-3 py-1.5 text-sm font-medium text-slate-100 transition-colors hover:bg-slate-700 disabled:pointer-events-none disabled:opacity-40 ${focusRing}`
+  const segBase =
+    'px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500 disabled:pointer-events-none disabled:opacity-40'
+  const segActive = 'bg-primary-600 text-white'
+  const segIdle = 'bg-slate-900 text-slate-300 hover:bg-slate-800'
 
   let input = $state('')
   let output = $state('')
@@ -105,14 +115,18 @@
 
 <div class="flex h-screen flex-col bg-slate-950 text-slate-100">
   <header class="flex items-center justify-between border-b border-slate-800 px-5 py-3">
-    <div>
-      <h1 class="text-lg font-semibold">n8nRedact</h1>
-      <p class="text-xs text-slate-400">
-        Deterministic · format-preserving · runs entirely in your browser
-      </p>
+    <div class="flex items-center gap-3">
+      <div>
+        <h1 class="text-lg font-semibold tracking-tight">
+          <span class="text-slate-100">n8n</span><span class="text-primary-500">Redact</span>
+        </h1>
+        <p class="text-xs text-slate-400">
+          Deterministic · format-preserving · runs entirely in your browser
+        </p>
+      </div>
     </div>
     <span
-      class="rounded-full border border-emerald-700 bg-emerald-950/50 px-3 py-1 text-xs text-emerald-300"
+      class="rounded-full border border-emerald-700/80 bg-emerald-950/50 px-3 py-1 text-xs font-medium text-emerald-300"
       title="A Content-Security-Policy blocks all network egress. Nothing you paste can leave this page."
     >
       🔒 No network · nothing uploaded
@@ -120,48 +134,44 @@
   </header>
 
   <div class="flex items-center gap-2 border-b border-slate-800 px-5 py-2">
-    <label class="cursor-pointer rounded bg-slate-800 px-3 py-1.5 text-sm hover:bg-slate-700">
+    <label class="{toolbarBtn} cursor-pointer focus-within:ring-2 focus-within:ring-primary-500">
       Upload .json
       <input
         type="file"
         accept="application/json,.json"
-        class="hidden"
+        class="sr-only"
         onchange={(e) => handleFiles((e.target as HTMLInputElement).files)}
       />
     </label>
-    <button
-      class="rounded bg-slate-800 px-3 py-1.5 text-sm hover:bg-slate-700 disabled:opacity-40"
-      disabled={!output}
-      onclick={copyOutput}
-    >
+    <Button.Root type="button" class={toolbarBtn} disabled={!output} onclick={copyOutput}>
       {copied ? 'Copied ✓' : 'Copy result'}
-    </button>
-    <button
-      class="rounded bg-slate-800 px-3 py-1.5 text-sm hover:bg-slate-700 disabled:opacity-40"
-      disabled={!output}
-      onclick={downloadOutput}
-    >
+    </Button.Root>
+    <Button.Root type="button" class={toolbarBtn} disabled={!output} onclick={downloadOutput}>
       Download
-    </button>
+    </Button.Root>
 
-    <div class="ml-2 inline-flex overflow-hidden rounded border border-slate-700 text-sm">
-      <button
-        class="px-3 py-1.5 {viewMode === 'split'
-          ? 'bg-slate-700'
-          : 'bg-slate-900 hover:bg-slate-800'}"
+    <div
+      class="ml-2 inline-flex overflow-hidden rounded-md border border-slate-700"
+      role="group"
+      aria-label="View mode"
+    >
+      <Button.Root
+        type="button"
+        aria-pressed={viewMode === 'split'}
+        class="{segBase} {viewMode === 'split' ? segActive : segIdle}"
         onclick={() => (viewMode = 'split')}
       >
         Split
-      </button>
-      <button
-        class="px-3 py-1.5 disabled:opacity-40 {viewMode === 'diff'
-          ? 'bg-slate-700'
-          : 'bg-slate-900 hover:bg-slate-800'}"
+      </Button.Root>
+      <Button.Root
+        type="button"
+        aria-pressed={viewMode === 'diff'}
+        class="{segBase} {viewMode === 'diff' ? segActive : segIdle}"
         disabled={!output}
         onclick={() => (viewMode = 'diff')}
       >
         Diff
-      </button>
+      </Button.Root>
     </div>
 
     <div class="ml-auto flex items-center gap-3 text-xs">
@@ -186,7 +196,10 @@
 
     {#if viewMode === 'diff' && output}
       <main class="min-h-0 flex-1">
-        <div class="border-b border-slate-800 px-4 py-1.5 text-xs font-medium text-slate-400">
+        <div
+          class="flex items-center border-b border-slate-800 px-4 py-1.5 text-xs font-medium tracking-wide text-slate-400 uppercase"
+        >
+          <span class="mr-2 h-3 w-0.5 rounded-full bg-primary-500/70"></span>
           Diff — original (left) vs anonymized (right)
         </div>
         <div class="h-[calc(100%-2rem)]">
@@ -198,7 +211,8 @@
         <section
           class="relative min-h-0"
           class:ring-2={dragging}
-          class:ring-emerald-500={dragging}
+          class:ring-primary-500={dragging}
+          class:ring-inset={dragging}
           ondragover={(e) => {
             e.preventDefault()
             dragging = true
@@ -207,7 +221,10 @@
           ondrop={onDrop}
           aria-label="Original workflow input"
         >
-          <div class="border-b border-slate-800 px-4 py-1.5 text-xs font-medium text-slate-400">
+          <div
+            class="flex items-center border-b border-slate-800 px-4 py-1.5 text-xs font-medium tracking-wide text-slate-400 uppercase"
+          >
+            <span class="mr-2 h-3 w-0.5 rounded-full bg-primary-500/70"></span>
             Original
           </div>
           <div class="h-[calc(100%-2rem)]">
@@ -223,7 +240,10 @@
         </section>
 
         <section class="min-h-0">
-          <div class="border-b border-slate-800 px-4 py-1.5 text-xs font-medium text-slate-400">
+          <div
+            class="flex items-center border-b border-slate-800 px-4 py-1.5 text-xs font-medium tracking-wide text-slate-400 uppercase"
+          >
+            <span class="mr-2 h-3 w-0.5 rounded-full bg-primary-500/70"></span>
             Anonymized
           </div>
           <div class="h-[calc(100%-2rem)]">
