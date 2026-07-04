@@ -14,7 +14,7 @@
     'px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500 disabled:pointer-events-none disabled:opacity-40'
   const segActive = 'bg-primary-600 text-white'
   const segIdle = 'bg-slate-900 text-slate-300 hover:bg-slate-800'
-  const headerCopyBtn = `ml-auto rounded bg-slate-800 px-2 py-0.5 text-[11px] font-medium tracking-normal normal-case text-slate-200 transition-colors hover:bg-slate-700 disabled:pointer-events-none disabled:opacity-40 ${focusRing}`
+  const headerCopyBtn = `mr-3 rounded bg-primary-600 px-3 py-1 text-xs font-medium tracking-normal normal-case text-white transition-colors hover:bg-primary-500 disabled:pointer-events-none disabled:opacity-40 ${focusRing}`
 
   let input = $state('')
   let output = $state('')
@@ -200,11 +200,11 @@
         <div
           class="flex items-center border-b border-slate-800 px-4 py-1.5 text-xs font-medium tracking-wide text-slate-400 uppercase"
         >
-          <span class="mr-2 h-3 w-0.5 rounded-full bg-primary-500/70"></span>
-          Diff — original (left) vs anonymized (right)
           <Button.Root type="button" onclick={copyOutput} disabled={!output} class={headerCopyBtn}>
             {copied ? 'Copied ✓' : 'Copy'}
           </Button.Root>
+          <span class="mr-2 h-3 w-0.5 rounded-full bg-primary-500/70"></span>
+          Diff — original (left) vs anonymized (right)
         </div>
         <div class="h-[calc(100%-2rem)]">
           <DiffView original={originalPretty} anonymized={output} />
@@ -247,8 +247,6 @@
           <div
             class="flex items-center border-b border-slate-800 px-4 py-1.5 text-xs font-medium tracking-wide text-slate-400 uppercase"
           >
-            <span class="mr-2 h-3 w-0.5 rounded-full bg-primary-500/70"></span>
-            Anonymized
             <Button.Root
               type="button"
               onclick={copyOutput}
@@ -257,6 +255,8 @@
             >
               {copied ? 'Copied ✓' : 'Copy'}
             </Button.Root>
+            <span class="mr-2 h-3 w-0.5 rounded-full bg-primary-500/70"></span>
+            Anonymized
           </div>
           <div class="h-[calc(100%-2rem)]">
             <CodeEditor value={output} readonly />
@@ -267,6 +267,6 @@
   </div>
 
   <footer class="border-t border-slate-800 px-5 py-2 text-xs text-slate-400">
-    Replacements are realistic but fake (format-preserving) — the anonymized workflow still imports.
+    Replacements are realistic but fake (format-preserving) - the anonymized workflow still imports.
   </footer>
 </div>

@@ -29,6 +29,7 @@
       b: { doc: anonymized, extensions: sideExtensions() },
       highlightChanges: true,
       gutter: true,
+      diffConfig: { scanLimit: 20000 },
     })
   }
 
