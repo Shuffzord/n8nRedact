@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { defineConfig, type Plugin } from 'vitest/config'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import tailwindcss from '@tailwindcss/vite'
@@ -28,9 +29,19 @@ function cspPlugin(): Plugin {
     name: 'inject-csp',
     apply: 'build',
     transformIndexHtml(html) {
+      // The JSON-LD block is static SEO metadata, not executable script, but
+      // CSP's script-src still governs <script> elements regardless of type —
+      // so it needs an explicit hash to run under 'self' without 'unsafe-inline'.
+      const ldJson = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)
+      const csp = ldJson
+        ? CSP.replace(
+            "script-src 'self'",
+            `script-src 'self' 'sha256-${createHash('sha256').update(ldJson[1]).digest('base64')}'`,
+          )
+        : CSP
       return html.replace(
         '</title>',
-        `</title>\n    <meta http-equiv="Content-Security-Policy" content="${CSP}" />`,
+        `</title>\n    <meta http-equiv="Content-Security-Policy" content="${csp}" />`,
       )
     },
   }

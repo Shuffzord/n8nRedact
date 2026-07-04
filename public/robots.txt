@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shuffzord.github.io/n8nRedact/sitemap.xml

@@ -6,12 +6,58 @@
     <meta name="referrer" content="no-referrer" />
     <meta
       name="description"
-      content="Deterministic, fully client-side anonymizer for exported n8n workflow JSON. Nothing leaves your browser."
+      content="Free n8n workflow anonymizer. Redact API keys, credentials, and secrets from exported n8n JSON before sharing — 100% client-side, nothing ever leaves your browser."
     />
-    <title>n8nRedact</title>
+    <meta
+      name="keywords"
+      content="n8n workflow anonymizer, n8n sanitize export, remove n8n credentials, n8n json redact, n8n privacy tool"
+    />
+    <link rel="canonical" href="https://shuffzord.github.io/n8nRedact/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://shuffzord.github.io/n8nRedact/" />
+    <meta property="og:title" content="n8nRedact — Anonymize n8n Workflow Exports" />
+    <meta
+      property="og:description"
+      content="Redact API keys, credentials, and secrets from exported n8n workflow JSON before sharing. 100% client-side, no uploads, no tracking."
+    />
+    <meta property="og:image" content="https://shuffzord.github.io/n8nRedact/og-image.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="n8nRedact — Anonymize n8n Workflow Exports" />
+    <meta
+      name="twitter:description"
+      content="Redact API keys, credentials, and secrets from exported n8n workflow JSON before sharing. 100% client-side, no uploads, no tracking."
+    />
+    <meta name="twitter:image" content="https://shuffzord.github.io/n8nRedact/og-image.png" />
+
+    <link rel="icon" href="/logo.png" type="image/png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "n8nRedact",
+        "url": "https://shuffzord.github.io/n8nRedact/",
+        "description": "Deterministic, fully client-side anonymizer for exported n8n workflow JSON. Redacts API keys, credentials, and identifiers before sharing.",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Any (runs in browser)",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
+
+    <title>n8nRedact — Anonymize n8n Workflow Exports</title>
   </head>
   <body>
     <div id="app"></div>
+    <noscript>
+      <h1>n8nRedact</h1>
+      <p>
+        Free, client-side anonymizer for exported n8n workflow JSON. Removes API keys,
+        credentials, and identifiers before you share a workflow — nothing is uploaded, everything
+        runs in your browser. Enable JavaScript to use the tool.
+      </p>
+    </noscript>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
