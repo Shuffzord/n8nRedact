@@ -41,9 +41,11 @@
     return () => view?.destroy()
   })
 
-  // Keep a read-only pane in sync when its value is set programmatically.
+  // Keep the editor in sync when its value is set programmatically (upload,
+  // drag-drop, clearing). Runs for the editable pane too — while typing,
+  // value === doc so no dispatch fires (no feedback loop / cursor jump).
   $effect(() => {
-    if (view && readonly && value !== view.state.doc.toString()) {
+    if (view && value !== view.state.doc.toString()) {
       view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: value } })
     }
   })

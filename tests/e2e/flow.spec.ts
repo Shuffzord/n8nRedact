@@ -23,8 +23,9 @@ test('shows risk, reports counts, and honours rule toggles', async ({ page }) =>
   const output = page.locator('.cm-content').nth(1)
   await expect(output).not.toContainText('jane@acme.com', { timeout: 5000 })
 
-  // Credentials present → high risk.
-  await expect(page.getByText('HIGH')).toBeVisible()
+  // Detected-stats panel lists what was found (no scary risk level).
+  await expect(page.getByText('Detected')).toBeVisible()
+  await expect(page.getByText('Credential refs')).toBeVisible()
 
   // Turn the email rule off: the original email should reappear in the output.
   await page.getByLabel('Email addresses').uncheck()

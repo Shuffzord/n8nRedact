@@ -14,15 +14,17 @@
     'px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500 disabled:pointer-events-none disabled:opacity-40'
   const segActive = 'bg-primary-600 text-white'
   const segIdle = 'bg-slate-900 text-slate-300 hover:bg-slate-800'
+  const headerCopyBtn = `ml-auto rounded bg-slate-800 px-2 py-0.5 text-[11px] font-medium tracking-normal normal-case text-slate-200 transition-colors hover:bg-slate-700 disabled:pointer-events-none disabled:opacity-40 ${focusRing}`
 
   let input = $state('')
   let output = $state('')
+  let originalPretty = $state('') // parsed original re-stringified so diff shows only value changes
   let error = $state<string | null>(null)
   let isN8n = $state(false)
   let counts = $state<Record<string, number>>({})
   let risk = $state<RiskReport | null>(null)
   let rules = $state<Rule[]>(defaultRules())
-  let viewMode = $state<'split' | 'diff'>('split')
+  let viewMode = $state<'split' | 'diff'>('diff')
   let dragging = $state(false)
   let copied = $state(false)
 
@@ -41,6 +43,7 @@
 
   function reset() {
     output = ''
+    originalPretty = ''
     counts = {}
     risk = null
     isN8n = false
@@ -69,6 +72,7 @@
       typeof obj.connections === 'object'
     const result = anonymize(parsed, rules)
     output = JSON.stringify(result.output, null, 2)
+    originalPretty = JSON.stringify(parsed, null, 2)
     counts = result.countsByCategory
     risk = assessRisk(parsed, result)
   }
@@ -143,9 +147,6 @@
         onchange={(e) => handleFiles((e.target as HTMLInputElement).files)}
       />
     </label>
-    <Button.Root type="button" class={toolbarBtn} disabled={!output} onclick={copyOutput}>
-      {copied ? 'Copied ✓' : 'Copy result'}
-    </Button.Root>
     <Button.Root type="button" class={toolbarBtn} disabled={!output} onclick={downloadOutput}>
       Download
     </Button.Root>
@@ -201,9 +202,12 @@
         >
           <span class="mr-2 h-3 w-0.5 rounded-full bg-primary-500/70"></span>
           Diff — original (left) vs anonymized (right)
+          <Button.Root type="button" onclick={copyOutput} disabled={!output} class={headerCopyBtn}>
+            {copied ? 'Copied ✓' : 'Copy'}
+          </Button.Root>
         </div>
         <div class="h-[calc(100%-2rem)]">
-          <DiffView original={input} anonymized={output} />
+          <DiffView original={originalPretty} anonymized={output} />
         </div>
       </main>
     {:else}
@@ -245,6 +249,14 @@
           >
             <span class="mr-2 h-3 w-0.5 rounded-full bg-primary-500/70"></span>
             Anonymized
+            <Button.Root
+              type="button"
+              onclick={copyOutput}
+              disabled={!output}
+              class={headerCopyBtn}
+            >
+              {copied ? 'Copied ✓' : 'Copy'}
+            </Button.Root>
           </div>
           <div class="h-[calc(100%-2rem)]">
             <CodeEditor value={output} readonly />

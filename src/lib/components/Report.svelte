@@ -10,12 +10,6 @@
     counts: Record<string, number>
     labels: Record<string, string>
   } = $props()
-
-  const BADGE: Record<string, string> = {
-    low: 'border-emerald-700 bg-emerald-950/50 text-emerald-300',
-    medium: 'border-amber-700 bg-amber-950/50 text-amber-300',
-    high: 'border-red-700 bg-red-950/50 text-red-300',
-  }
 </script>
 
 {#if risk}
@@ -23,13 +17,8 @@
     <div class="flex items-center gap-2">
       <h2 class="flex items-center text-xs font-semibold tracking-wide text-slate-400 uppercase">
         <span class="mr-2 h-3.5 w-0.5 rounded-full bg-primary-500"></span>
-        Risk
+        Detected
       </h2>
-      <span
-        class="rounded-full border px-2 py-0.5 text-xs font-medium uppercase {BADGE[risk.level]}"
-      >
-        {risk.level}
-      </span>
     </div>
 
     {#each risk.warnings as warning (warning)}
