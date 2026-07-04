@@ -144,13 +144,6 @@ describe('Functional: rule categories', () => {
     expect(out.nodes[0]?.parameters.chatId).toBe(expr) // expression survives untouched
   })
 
-  // GAP
-  it('TODO: Names (PII) rule [deferred]', () => {
-    expect.fail(
-      'TODO: personal-name rule + word-list generator not built. See .planning/ROADMAP.md #6',
-    )
-  })
-
   // COVERED (also: tests/engine/phone.test.ts)
   it('anonymizes phone numbers into the NANP 555-01xx fictional range', () => {
     const out = asString(anonymize({ phone: '+14155552671' }, defaultRules()).output)
@@ -158,17 +151,9 @@ describe('Functional: rule categories', () => {
     expect(out).toContain('555')
   })
 
-  // GAP
-  it('TODO: Company names rule [deferred]', () => {
-    expect.fail('TODO: company-name rule + word-list generator not built. See .planning/ROADMAP.md')
-  })
-
-  // GAP
-  it('TODO: Custom user-defined patterns rule [deferred]', () => {
-    expect.fail(
-      'TODO: custom-regex rule + session-only persistence not built. See .planning/DESIGN.md open items',
-    )
-  })
+  // DEFERRED (UI batch): user-supplied custom patterns is the safe path for
+  // names / company / project-specific values, instead of unreliable auto-detection.
+  it.todo('custom user-defined patterns rule + session persistence')
 })
 
 // ---------------------------------------------------------------------------
@@ -189,13 +174,6 @@ describe('Non-functional requirements', () => {
       string
     >
     expect(out.a).toBe(out.b)
-  })
-
-  // GAP
-  it('TODO: cross-representation referential integrity (dashed-UUID == undashed-hex → one fake)', () => {
-    expect.fail(
-      'TODO: a dashed UUID and its undashed 32-hex form map to different fakes (separate rules/categories) — add a canonical key. See .planning/ROADMAP.md #5 (Arch #5)',
-    )
   })
 
   // COVERED (also: tests/engine/anonymize.test.ts) — shallow structure preservation
@@ -289,12 +267,8 @@ describe('Non-functional requirements', () => {
     expect(risk.warnings.join(' ')).toContain('pinData')
   })
 
-  // GAP
-  it('TODO: pinData strip affordance (offer to remove pinData, default on when non-empty)', () => {
-    expect.fail(
-      'TODO: warning exists but there is no strip action — add strip affordance. See .planning/ROADMAP.md #5 (Arch #6)',
-    )
-  })
+  // DEFERRED (UI batch)
+  it.todo('pinData strip affordance (offer to remove pinData, default on when non-empty)')
 
   // COVERED
   it('handles adversarial input — null / primitive / top-level array / empty object', () => {
