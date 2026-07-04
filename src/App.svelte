@@ -106,7 +106,7 @@
 <div class="flex h-screen flex-col bg-slate-950 text-slate-100">
   <header class="flex items-center justify-between border-b border-slate-800 px-5 py-3">
     <div>
-      <h1 class="text-lg font-semibold">n8n Workflow Anonymizer</h1>
+      <h1 class="text-lg font-semibold">n8nRedact</h1>
       <p class="text-xs text-slate-400">
         Deterministic · format-preserving · runs entirely in your browser
       </p>

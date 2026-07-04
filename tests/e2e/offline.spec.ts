@@ -11,7 +11,7 @@ test('works offline after the first visit', async ({ page, context }) => {
   await context.setOffline(true)
   await page.reload()
 
-  await expect(page.getByRole('heading', { name: 'n8n Workflow Anonymizer' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'n8nRedact' })).toBeVisible()
   // Still fully functional offline.
   const input = page.locator('.cm-content').first()
   await input.click()
