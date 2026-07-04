@@ -13,7 +13,7 @@ export interface RiskReport {
 // Only categories that a default rule can actually emit are listed here (see the
 // SCORED_CATEGORIES ⊆ rule categories test).
 const HIGH_CATEGORIES: Category[] = ['apiKey', 'credentialName', 'chatId']
-const MEDIUM_CATEGORIES: Category[] = ['email', 'url', 'dbBucket', 'resourceId', 'uuid']
+const MEDIUM_CATEGORIES: Category[] = ['email', 'url', 'phone', 'dbBucket', 'resourceId', 'uuid']
 
 /** Every category the risk model scores — exported so tests can assert no dead entries. */
 export const SCORED_CATEGORIES: readonly Category[] = [...HIGH_CATEGORIES, ...MEDIUM_CATEGORIES]
@@ -24,6 +24,7 @@ const REASON_LABELS: Partial<Record<Category, string>> = {
   chatId: 'messaging id(s)',
   email: 'email address(es)',
   url: 'URL(s)',
+  phone: 'phone number(s)',
   dbBucket: 'resource name(s)',
   resourceId: 'resource id(s)',
   uuid: 'id(s)',

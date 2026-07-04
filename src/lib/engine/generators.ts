@@ -81,6 +81,27 @@ export function fakeResourceId(original: string, n: number): string {
 }
 
 /**
+ * Format-preserving fake phone number. The original's shape is kept verbatim
+ * (leading `+`, separators, parentheses, and digit grouping); only the digits
+ * are swapped. The last seven digits become a NANP fictional `555-01xx` number
+ * (reserved for fiction, so the result can never dial a real line), and any
+ * leading country/area digits are replaced with deterministic filler whose first
+ * digit is 2-9 so the result still reads as a plausible number. Deterministic in
+ * `n`, so the same original always maps to the same fake.
+ */
+export function fakePhone(original: string, n: number): string {
+  const count = (original.match(/\d/g) ?? []).length
+  const rng = makeRng(n)
+  const subscriber = '555' + '01' + String(n % 100).padStart(2, '0') // 555-01xx (7 digits)
+  const leadCount = Math.max(0, count - subscriber.length)
+  let lead = ''
+  for (let i = 0; i < leadCount; i++) lead += i === 0 ? String(2 + rng(8)) : String(rng(10))
+  const target = (lead + subscriber).slice(-count)
+  let i = 0
+  return original.replace(/\d/g, () => target[i++] ?? '5')
+}
+
+/**
  * Length- and character-class-preserving token so field validators still pass.
  * Digits map to digits, letters to letters (case kept), separators are left as
  * they are. The output depends only on the counter and the value's shape, never

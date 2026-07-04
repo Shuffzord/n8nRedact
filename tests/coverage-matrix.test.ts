@@ -151,11 +151,11 @@ describe('Functional: rule categories', () => {
     )
   })
 
-  // GAP
-  it('TODO: Phone numbers rule [deferred]', () => {
-    expect.fail(
-      'TODO: phone rule (NANP 555-01xx fictional range) not built. See .planning/ROADMAP.md notes',
-    )
+  // COVERED (also: tests/engine/phone.test.ts)
+  it('anonymizes phone numbers into the NANP 555-01xx fictional range', () => {
+    const out = asString(anonymize({ phone: '+14155552671' }, defaultRules()).output)
+    expect(out).not.toContain('+14155552671')
+    expect(out).toContain('555')
   })
 
   // GAP

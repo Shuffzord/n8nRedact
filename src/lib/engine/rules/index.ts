@@ -4,6 +4,7 @@ import { credentialRule } from './credential'
 import { resourceNameRule } from './resourceName'
 import { resourceLocatorRule } from './resourceLocator'
 import { chatIdRule } from './chatId'
+import { phoneRule } from './phone'
 import { uuidRule } from './uuid'
 import { emailRule } from './email'
 import { urlRule } from './url'
@@ -22,6 +23,7 @@ export function defaultRules(): Rule[] {
     resourceNameRule(),
     resourceLocatorRule(),
     chatIdRule(),
+    phoneRule(),
     uuidRule(),
     emailRule(),
     urlRule(),
@@ -35,6 +37,7 @@ export {
   resourceNameRule,
   resourceLocatorRule,
   chatIdRule,
+  phoneRule,
   uuidRule,
   emailRule,
   urlRule,
