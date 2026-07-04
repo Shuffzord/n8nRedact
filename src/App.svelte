@@ -201,7 +201,7 @@
           class="flex items-center border-b border-slate-800 px-4 py-1.5 text-xs font-medium tracking-wide text-slate-400 uppercase"
         >
           <Button.Root type="button" onclick={copyOutput} disabled={!output} class={headerCopyBtn}>
-            {copied ? 'Copied ✓' : 'Copy'}
+            {copied ? 'Copied ✓' : 'Copy anonymized'}
           </Button.Root>
           <span class="mr-2 h-3 w-0.5 rounded-full bg-primary-500/70"></span>
           Diff — original (left) vs anonymized (right)
